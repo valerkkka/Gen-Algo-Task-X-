@@ -76,28 +76,34 @@ def fitness(individual, data):
     return item, price, individual
 
 
-# 2.1
 def selection(first_generation):
     count_price = []
-    total_price = 0
     for i in range(0, len(first_generation)):
         count_price.append((fitness(first_generation[i], input_data)))
-    #here will be roulette
     return count_price
 
-
+#roulette
 def crossingover(after_selection):
     forward_generation = []
-    for i in range(0, len(after_selection), 2):
+    index = [i for i in range(0, population)]
+    for i in range(0, int(len(after_selection) / 2)):
         child1, child2 = [], []
+        if len(index) < 1:
+            break
+        first_ind = random.randint(0, len(index) - 1)
+        first = index[first_ind]
+        index.remove(first)
+        second_ind = random.randint(0, len(index) - 1)
+        second = index[second_ind]
+        index.remove(second)
+        ind = random.randint(0, 1)
         for j in range(0, len(after_selection[i][2])):
-            ind = random.randint(0, 1)
             if ind == 1:
-                child1.append(after_selection[i][2][j])
-                child2.append(after_selection[i + 1][2][j])
+                child1.append(after_selection[first][2][j])
+                child2.append(after_selection[second][2][j])
             else:
-                child2.append(after_selection[i][2][j])
-                child1.append(after_selection[i + 1][2][j])
+                child2.append(after_selection[first][2][j])
+                child1.append(after_selection[second][2][j])
         forward_generation.append(child1)
         forward_generation.append(child2)
     return forward_generation
@@ -106,7 +112,7 @@ def crossingover(after_selection):
 def mutation(make_children_from_individuals):
     for i in range(0, int(len(make_children_from_individuals) * mutation_percent)):
         ind = random.randint(0, len(make_children_from_individuals) - 1)
-        number = random.randint(0, 30)
+        number = random.randint(0, 29)
         if make_children_from_individuals[ind][number] == 1:
             make_children_from_individuals[ind][number] = 0
         else:
